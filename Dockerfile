@@ -8,14 +8,12 @@ ENV TZ=Asia/Tokyo
 
 # インフラを整備
 RUN apt-get update && \
-    apt-get install -y zsh time tzdata tree git curl
-    #  software-properties-common
+    apt-get install -y zsh time tzdata tree git curl chromium-chromedriver firefox-geckodriver peco
 
 # デフォルトシェルをZ shellにする
 RUN chsh -s /bin/zsh
 
 # C++, Python3, PyPy3の3つの環境想定
-# RUN add-apt-repository ppa:ubuntu-toolchain-r/test \
 RUN apt-get update && \
     apt-get install -y gcc-9 g++-9 python3.8 python3-pip pypy3 nodejs npm clang
 
@@ -35,7 +33,8 @@ RUN pip install numpy==1.18.2 && \
     pip install numba==0.48.0 && \
     pip install networkx==2.4 \
     pip install black \
-    pip install ptpython
+    pip install ptpython \
+    pip install selenium
 
 # C++でAtCoder Library(ACL)を使えるようにする
 RUN git clone https://github.com/atcoder/ac-library.git /lib/ac-library
@@ -55,6 +54,12 @@ ENV PATH $PATH:/home/root/.cargo/bin
 
 WORKDIR /root/problems
 WORKDIR /root/library
+
+COPY /Users/y.midorikawa/.zshrc /root/.zshrc
+WORKDIR /tmp
+RUN wget https://github.com/peco/peco/releases/download/v0.5.7/peco_linux_386.tar.gz \
+    && tar xzvf peco_linux_386.tar.gz \
+    && cp peco_linux_386/peco /usr/local/bin
 
 ARG USER=kiraranoumi
 ARG PASSWORD=m35145555
